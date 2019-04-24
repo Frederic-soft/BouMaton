@@ -1,0 +1,17 @@
+#include <stdlib.h>
+#include <libgen.h>
+#include <strings.h>
+
+const char * javarez = "/Resources/Java/$(APPNAME).jar";
+const char * javacmd = "java -jar ";
+
+int main(int argc, char ** argv) {
+	char * dir = dirname(argv[0]);
+	char * bundledir = dirname(dir);
+	char * javabin = malloc(strlen(javacmd) + strlen(bundledir) + strlen(javarez) + 1);
+	strcpy(javabin, javacmd);
+	strcat(javabin, bundledir);
+	strcat(javabin, javarez);
+	system(javabin);
+	return EXIT_SUCCESS;
+}

@@ -1,0 +1,8 @@
+Main-Class: BouMaton
+Name: BouMaton
+Specification-Title: "Image transforming application"
+Specification-Version: "2.0"
+Specification-Vendor: "frederic.boulanger@centralesupelec.fr"
+Implementation-Title: "BouMaton"
+Implementation-Version: "2.0 2019-04-23"
+Implementation-Vendor: "frederic.boulanger@centralesupelec.fr"

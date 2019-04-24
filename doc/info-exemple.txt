@@ -1,0 +1,33 @@
+example.jpg 360x400
+
+Photomaton
+----------
+PŽriode de l'image = 3222
+
+PŽriodes des pixels : 
+3222 :  93,98% pixels, 100,00% pixels en place
+1074 :   2,98% pixels,   5,50% pixels en place
+ 537 :   1,49% pixels,   2,00% pixels en place
+  18 :   0,52% pixels,   0,56% pixels en place
+ 179 :   0,50% pixels,   0,50% pixels en place
+ 358 :   0,50% pixels,   0,50% pixels en place
+   6 :   0,02% pixels,   0,03% pixels en place
+   3 :   0,01% pixels,   0,01% pixels en place
+   2 :       4 pixels,   0,01% pixels en place
+   1 :       4 pixels,       4 pixels en place
+
+Boulanger
+---------
+PŽriode de l'image = 896568225229163143800
+
+PŽriodes des pixels : 
+67911 :  47,16% pixels,  47,16% pixels en place
+27656 :  19,21% pixels,  19,21% pixels en place
+14975 :  10,40% pixels,  10,40% pixels en place
+14850 :  10,31% pixels,  10,32% pixels en place
+10540 :   7,32% pixels,   7,33% pixels en place
+ 4862 :   3,38% pixels,   3,38% pixels en place
+ 3196 :   2,22% pixels,   2,22% pixels en place
+    5 :       5 pixels,       6 pixels en place
+    4 :       4 pixels,       5 pixels en place
+    1 :       1 pixels,       1 pixels en place
