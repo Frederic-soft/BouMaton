@@ -8,7 +8,7 @@ doc : BouMaton.pdf BouMaton_fr.pdf
 	$(PDFLATEX) $<
 
 clean :
-	rm -f *.aux *.log *.out
+	rm -f *.aux *.log *.out *.synctex.gz *.fdb_latexmk
 
 clobber : clean
 	rm -r *.pdf

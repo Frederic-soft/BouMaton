@@ -1,1 +1,787 @@
-\documentclass[a4paper]{article}\usepackage[T1]{fontenc}\usepackage[applemac]{inputenc}\usepackage{ifthen}\usepackage{xspace}\usepackage{overpic}\usepackage{garamath}\usepackage{gillsans}\usepackage[francais]{babel}\usepackage{sectsty}\allsectionsfont{\sffamily\bfseries}% Numéro de section dans la marge\makeatletter\def\@seccntformat#1{%  \protect\makebox[0pt][r]{%    \csname the#1\endcsname\quad  }%}\makeatother\usepackage[nohead,top=1cm,left=2.5cm,right=2cm,bottom=1.5cm,footskip=1cm]{geometry}\usepackage{fancyhdr}\pagestyle{fancy}\fancyhead{}\renewcommand{\headrulewidth}{0pt}\lfoot{\textsf{\footnotesize BouMaton <\url{http://wwwsi.supelec.fr/fb/Development.html}>}}\cfoot{\thepage}\rfoot{\textsf{\footnotesize  \href{mailto:Frederic.Boulanger@supelec.fr}{<Frederic.Boulanger@supelec.fr>}%}}\renewcommand{\footrulewidth}{0pt}\usepackage[%  pdfauthor={Frédéric Boulanger},  pdftitle={Manuel de BouMaton},  pdffitwindow,  pdfstartview=XYZ,  pdfpagemode=None]{hyperref}\newcommand{\signature}{%  \vfill  \begin{flushright}    \href{mailto:Frederic.Boulanger@supelec.fr}{Frédéric Boulanger},    \the\year-\ifnum\the\month<10 0\fi\the\month-\ifnum\the\day<10 0\fi\the\day  \end{flushright}}\AtEndDocument{\signature}%\setlength{\parindent}{0pt}%\setlength{\parskip}{1ex plus 0.5ex minus 0.5ex}\newcommand{\bouVersion}{1.5\xspace}\newcommand{\bouRelease}{2006-02-10\xspace}\newcommand{\BouMaton}{\textsf{BouMaton}\xspace}\newcommand{\filename}[1]{\textsf{#1}}\newcommand{\menu}[1]{\textsf{\textbf{#1}}}\newcommand{\picdim}[2]{#1\,\(\times\)\,#2}\begin{document}  \begin{center}    \textsf{\textbf{\large BouMaton v\bouVersion, \bouRelease}}        \includegraphics[scale=0.5]{icone}        \href{mailto:Frederic.Boulanger@supelec.fr}{\textsf{Frédéric Boulanger}}  \end{center}      \section{Qu'est-ce ?}  \BouMaton est une application qui calcule deux transformations   d'images :  \begin{itemize}    \item la transformation du \textbf{photomaton} qui répartit les     pixels de l'image vers ses quatre coins, donnant ainsi un résultat     qui semble contenir quatre sous-images identiques à l'original,     comme dans un photomaton ;        \item la transformation du \textbf{boulanger} qui étire une image     horizontalement avant de la replier afin qu'elle conserve sa taille     d'origine. Cette manœuvre est similaire au geste du boulanger qui     pétrit sa pâte, d'où le nom.  \end{itemize}    Ces deux transformations conservent toute l'information présente   dans l'image, il est donc toujours possible de retrouver l'original   en appliquant les transformations inverses. De plus, ces   transformations sont périodiques : après un certain nombre   d'itérations, on retrouve l'image d'origine.    \BouMaton peut appliquer ces transformations et leurs inverses un   nombre quelconque de fois. Il calcule la période des transformations   pour l'image choisie, et conserve un historique des transformations   appliquées. Il peut aussi enregistrer le résultat des transformations   au format JPEG si les classes Java nécessaires sont disponibles sur   votre machine.      \section{Le pied à l'étrier}  \BouMaton est une application Java. Sur la plupart des systèmes  avec interface graphique, il suffit de double-cliquer le fichier  \filename{BouMaton.jar} pour la lancer. Dans un terminal en ligne de  commande, tapez \verb|java -jar BouMaton.jar| pour lancer \BouMaton.  Sous Mac~OS~X, utilisez plutôt l'application \filename{BouMaton}  (mais le fichier \filename{BouMaton.jar} ou la ligne de commande  fonctionnent aussi).    Lorsque \BouMaton est lancé, choisissez l'article \menu{Ouvrir...} du   menu \menu{Fichier} pour choisir une image. Les formats reconnus sont   ceux supportés par Java~1.4 : jpeg, gif et png.    Cliquez sur l'un des boutons \menu{boulanger} ou \menu{photomaton},   ou sélectionnez l'article correspondant dans le menu   \menu{Transformations} pour appliquer une transformation à l'image   affichée. Vous pouvez indiquer le nombre d'itérations de la   transformation (négatif pour obtenir la transformation inverse) dans   le champ de saisie situé entre les deux boutons.    Si vous avez lancé le calcul d'un grand nombre d'itérations d'une   transformation sur une image de grande taille et trouvez que cela   prend trop de temps, vous pouvez interrompre le calcul grâce à   l'article \menu{Interrompre} du menu \menu{Transformations}.    \section{Une description plus détaillée}  La fenêtre principale de \BouMaton contient les éléments suivants :  \begin{center}    \sffamily    \begin{overpic}[%                    scale=.4,                    %grid                   ]{vue_generale_fr}      \put(-10,80){\makebox(0,0)[br]{zone d'affichage}}      \put(-10,80){\vector(2,-1){25}}      %      \put(-10,20){\makebox(0,0)[br]{avancement du calcul de la période}}      \put(-10,20){\vector(3,-1){12}}      %      \put(-10,12){\makebox(0,0)[br]{transformation du boulanger}}      \put(-10,12){\vector(4,-1){12}}      %      \put(20,-2){\makebox(0,0)[tr]{dimensions de l'image}}      \put(20,-2){\vector(1,2){8}}      %      \put(36,-2){\makebox(0,0)[tl]{nombre d'itérations}}      \put(35,-2){\vector(0,1){8}}      %      \put(80,12){\makebox(0,0)[bl]{transformation du photomaton}}      \put(80,12){\vector(-4,-1){10}}      %      \put(80,20){\makebox(0,0)[bl]{période de la transformation du photomaton}}      \put(80,20){\vector(-3,-1){17}}    \end{overpic}  \end{center}  \vspace{2cm}    La zone d'affichage montre le résultat de l'application des   transformations à l'image. La barre d'avancement du calcul de la   période indique que la période de la transformation du boulanger pour   cette image est en cours de calcul. Quand le calcul sera terminé, la   barre d'avancement sera remplacée par le résultat.  Les boutons \menu{boulanger} et \menu{photomaton} provoquent le   calcul de la transformation correspondante, appliquée autant de fois   qu'indiqué dans le champ de saisie.  Sur la droite, vous pouvez voir la période de la transformation du   photomaton pour cette image (elle est beaucoup plus rapide à calculer   que celle de la transformation du boulanger).  Dans l'exemple suivant, la zone d'affichage montre le résultat de la   transformation du photomaton appliquée à l'image de départ, et le   programme est en train de calculer 500 itérations de la   transformation du photomaton :  \begin{center}    \sffamily    \begin{overpic}[%                    scale=.4,                    %grid                   ]{photomaton}      \put(-10,12){\makebox(0,0)[br]{%        \parbox{70\unitlength}{%          désactivé car une transformation est en cours de calcul        }%      }}      \put(-10,12){\vector(4,-1){12}}      %      \put(30,-17){\makebox(0,0)[t]{nous voulons 500 itérations}}      \put(30,-15){\vector(1,4){5}}      %      \put(80,12){\makebox(0,0)[bl]{%        \parbox{70\unitlength}{%          désactivé car une transformation est en cours de calcul        }%      }}      \put(80,15){\vector(-4,-1){17}}      %      \put(80,0){\makebox(0,0)[tl]{%        \parbox{70\unitlength}{%          avancement du calcul des 500 itérations de la transformation du           photomaton        }%      }}      \put(80,0){\vector(-4,1){14}}    \end{overpic}  \end{center}    \vspace{2cm}    Pour la transformation du boulanger, le comportement est similaire :   dans l'exemple suivant, le résultat de la transformation du boulanger   appliquée à l'image de départ est affiché, et le programme est en   train de calculer 500 itérations de la transformation du boulanger :  \begin{center}    \sffamily    \begin{overpic}[%                    scale=.4,                    %grid                   ]{boulanger}      \put(-10,12){\makebox(0,0)[br]{%        \parbox{70\unitlength}{%          désactivé car une transformation est en cours de calcul        }%      }}      \put(-10,12){\vector(4,-1){12}}      %      \put(30,-17){\makebox(0,0)[t]{nous voulons 500 itérations}}      \put(30,-15){\vector(1,4){5}}      %      \put(80,12){\makebox(0,0)[bl]{%        \parbox{70\unitlength}{%          désactivé car une transformation est en cours de calcul        }%      }}      \put(80,15){\vector(-4,-1){17}}      %      \put(-10,0){\makebox(0,0)[tr]{%        \parbox{70\unitlength}{%          avancement du calcul des 500 itérations de la transformation du           boulanger        }%      }}      \put(-10,0){\vector(4,1){10}}    \end{overpic}  \end{center}    \vspace{2cm}  \section{Enregistrement des images}  Depuis sa version 1.4, \BouMaton requiert au moins la version 1.4   de Java, mais en contrepartie, il est capable d'enregistrer les   images aux formats JPEG et PNG.  Le format JPEG donne des fichiers plus petits pour les  photographies, mais il supprime des détails qui sont considérés  comme mineurs lorsqu'on prend en compte la manière dont un être  humain voit.  Lorsqu'on enregistre une image au format JPEG, on peut  choisir la quantité d'information qui sera perdue en ajustant la  qualité de l'image enregistrée.Le réglage varie de 0 (forte  compression, fichier de petite taille, mais qualité très faible), à  100 (compression faible, fichier de plus grande taille, mais  meilleure qualité).  Pour vous aider dans votre choix, \BouMaton  peut calculer une estimation de la taille qu'aurait le fichier avec  le réglage courant si vous cliquez le bouton \menu{Calculer la  taille} de ce dialogue.  Si la taille estimée est plus petite que la  taille du fichier JPEG d'origine, votre réglage est sûrement trop  faible.  Si elle est beaucoup plus élevée, votre réglage est  sûrement trop fort.  Comme les transformations rendent l'image de  plus en plus complexe, il est normal que la taille estimée croisse  pour les résultats de transformations successives, à réglage de  qualité JPEG constant.    Le format PNG n'élimine aucune information et fournit donc  généralement des fichiers beaucoup plus gros que le format JPEG.   Toutefois, ce format utilise un algorithme de compression sans   perte qui est plus efficace que la compression JPEG sur les images   qui ne contiennent que des lignes et des zones de couleur uniforme.   Comme le format PNG ne supprime pas d'information, vous pouvez   l'utiliser pour enregistrer des images transformées dont vous   souhaitez restaurer plus tard l'aspect d'origine en appliquant les   transformations inverses.    %   \section{Enregistrement des images en JPEG}%   Si \BouMaton a trouvé les classes nécessaires sur votre%   ordinateur, l'article \menu{Enregistrer...} du menu \menu{Fichier}%   est accessible et vous permet d'enregistrer les merveilleuses images%   que vous obtiendrez avec \BouMaton. Le seul format de fichier%   supporté pour l'enregistrement est le JPEG. Ce format réduit la%   taille du fichier contenant une image en ignorant les détails qu'il%   considère comme moins important à cause de la manière dont l'œil%   humain voit. Quand vous enregistrer une image dans un fichier,%   \BouMaton affiche un dialogue vous permettant de déterminer la%   quantité d'information à préserver lors de la compression JPEG.%   Le réglage varie de 0 (forte compression, fichier de petite taille,%   mais qualité très faible), à 100 (compression faible, fichier de%   plus grande taille, mais meilleure qualité). Pour vous aider dans%   votre choix, \BouMaton peut calculer une estimation de la taille%   qu'aurait le fichier avec le réglage courant si vous cliquez le%   bouton \menu{Calculer la taille} de ce dialogue. Si la taille%   estimée est plus petite que la taille du fichier JPEG d'origine,%   votre réglage est sûrement trop faible. Si elle est beaucoup plus%   élevée, votre réglage est sûrement trop fort. Comme les%   transformations rendent l'image de plus en plus complexe, il est%   normal que la taille estimée croisse pour les résultats de%   transformations successives, à réglage de qualité JPEG constant.    \section{Historique des transformations}  \BouMaton conserve la trace des transformations appliquées à une   image depuis son chargement. Vous pouvez afficher cet historique   grâce à l'article \menu{Afficher l'historique} du menu   \menu{Transformations} :  \begin{center}    \includegraphics[scale=0.4]{history_fr}  \end{center}  Les transformations successives identiques sont fusionnées dans   l'historique, de sorte que deux transformations du photomaton   successives donneront une seule entrée (avec un nombre d'itérations   égal à 2) dans l'historique. Chaque entrée donne la nature de la   transformation, le nombre d'itérations demandées, le nombre   d'itérations effectivement calculées, et le temps mis pour effectuer   le calcul. Le nombre d'itérations effectivement calculées peut être   inférieur au nombre d'itérations demandées, car calculer 3225   itérations d'une transformation dont la période est 3222 revient   exactement au même que calculer seulement 3 itérations, ce qui prend   beaucoup moins de temps. Avec la même période, si vous demandez 3200   itérations, \BouMaton calculera 22 itérations de la transformation   inverse puisque c'est plus rapide.  Vous pouvez toujours revenir à l'image d'origine grâce à l'article   \menu{Restaurer l'original} du menu \menu{Fichier}. Cela efface   aussi l'historique des transformations.    \section{Informations sur les transformations}  Lorsqu'il calcule la période des transformations, \BouMaton collecte   des informations sur la période de chaque pixel de l'image. Au cours   de transformations successives, chaque pixel parcourt une orbite (il   passe par une suite de positions successives) et peut revenir à sa   position initiale bien avant que toute l'image retrouve sa forme   initiale. La période de la transformation est le plus petit nombre   d'itérations tel que tous les pixels de l'image ont fait un nombre   entier de tours sur leur orbite.    Il peut arriver qu'après un certain nombre d'itérations, un grand   nombre de pixels soient revenus à leur position initiale, sans   qu'ils le soient tous. L'image de départ semble alors émerger d'une   sorte de brouillard aléatoire de pixels.  En choisissant l'article \menu{Afficher les informations} du menu   \menu{Transformations}, vous affichez les informations collectées   sur les deux transformations. Les informations concernant la   transformation du boulanger sont assez longues à calculer et   n'apparaissent que lorsque la période de cette transformation est   calculée.    \begin{center}    \includegraphics[scale=0.4]{info_fr}  \end{center}  Cet exemple montre les informations obtenues pour une image de   \picdim{360}{400} pixels (les périodes ne dépendent que de la   géométrie de l'image, pas de son contenu). On peut voir que la   période de la transformation du boulanger est vraiment grande, mais   qu'après 67911 itérations, 47,16\,\% des pixels ont retrouvé leur   position initiale.    \section{Exemples}  Les suites d'images suivantes montrent l'évolution d'une image pour   chacune des transformations. Partant de l'original, on passe   ensuite à des images où toute information semble perdue, ainsi qu'à   d'autres où des motifs fantômes apparaissent, pour finalement   revenir à l'image d'origine.    \subsection{Itérations de la transformation du photomaton}  {\sffamily\small  \begin{tabular}{@{}*5{p{0.18\textwidth}}@{}}    \includegraphics[width=\linewidth]{example}    &    \includegraphics[width=\linewidth]{example_p1}    &    \includegraphics[width=\linewidth]{example_p3}    &    \includegraphics[width=\linewidth]{example_p8}    &    \includegraphics[width=\linewidth]{example_p179}    \\      image d'origine    & après une itération    & après 3 itérations    & après 8 itérations    & quelque chose apparaît après 179 itérations    \\[10pt]    \includegraphics[width=\linewidth]{example_p180}    &    \includegraphics[width=\linewidth]{example_p_6}    &    \includegraphics[width=\linewidth]{example_p_2}    &    \includegraphics[width=\linewidth]{example_p_1}    &    \includegraphics[width=\linewidth]{example}    \\      on est près de l'original après 180 itérations    & 6 itérations avant le retour à l'original    & 2 itérations avant le retour à l'original    & 1 itération avant le retour à l'original    & retour à l'original après 3222 itérations  \end{tabular}  }    \subsection{Itérations de la transformation du boulanger}  {\sffamily\small  \begin{tabular}{@{}*5{p{0.18\textwidth}}@{}}    \includegraphics[width=\linewidth]{example}    &    \includegraphics[width=\linewidth]{example_b1}    &    \includegraphics[width=\linewidth]{example_b4}    &    \includegraphics[width=\linewidth]{example_b20}    &    \includegraphics[width=\linewidth]{example_b27656}    \\      image d'origine    & après une itération    & après 4 itérations    & après 20 itérations    & 19,2\% des pixels sont en place après 27656 itérations    \\[10pt]    \includegraphics[width=\linewidth]{example_b67911}    &    \includegraphics[width=\linewidth]{example_b_6}    &    \includegraphics[width=\linewidth]{example_b_2}    &    \includegraphics[width=\linewidth]{example_b_1}    &    \includegraphics[width=\linewidth]{example}    \\      47.2\% des pixels sont en place après 67911 itérations    & 6 itérations avant le retour à l'original    & 2 itérations avant le retour à l'original    & 1 itération avant le retour à l'original    & retour à l'original après {\tiny 896568225229163143800} itérations  \end{tabular}  }    \section{Licence}  \newlength{\savedindent}  \setlength{\savedindent}{\parindent}  \setlength{\parindent}{0pt}  \newlength{\savedskip}  \setlength{\savedskip}{\parskip}  \setlength{\parskip}{1ex}    \BouMaton est copyright Frédéric Boulanger 1997-2006, tous droits   réservés.    \BouMaton et son code source peuvent être redistribués librement   tant qu'ils ne sont pas modifiés et que la distribution inclut cette   documentation. Les traductions de la documentation et de   l'application sont autorisées, mais les versions originales (voir   \ref{sec:tech-details} plus bas) doivent toujours faire partie de la   distribution.  \BouMaton est distribué «~en l'état~» avec absolument aucune   garantie concernant sa qualité, sa précision ou son utilité pour quoi   que ce soit.  Des fragments du code source de \BouMaton peuvent être utilisés   librement dans d'autres applications à condition que cette   utilisation soit mentionnée dans la documentation et dans   l'application elle-même, par exemple dans le dialogue «~À propos de~»   ou dans le message de démarrage si l'application n'a pas d'interface   graphique.  Le nom «~\BouMaton~» ne peut pas être utilisé pour des versions   modifiées de \BouMaton, et l'auteur de la version modifiée doit   indiquer clairement que je ne suis pas l'auteur principal de son   application.    \setlength{\parindent}{\savedindent}  \setlength{\parskip}{\savedskip}    \section{L'histoire de \BouMaton}  Tout a commencé avec un article de Jean-Paul Delahaye et Philippe  Mathieu dans le numéro de décembre 1997 (242) de «~Pour la  Science~».  Cet article présentait les transformations du  boulanger et du photomaton, et j'ai alors commencé à coder ces  transformations en C. Pour éviter d'avoir à écrire une  application complète, j'ai utilisé le mécanisme de modules  d'extension de GraphicConverter, une élégante application pour  Mac~OS qui est capable de lire et de créer presque n'importe quel  type de fichier graphique  (\url{http://www.bonnaure.com/GraphicConverter/info.html}). Cela   déboucha sur la création de deux modules d'extension nommés   \filename{PhotoMaton} et \filename{Boulanger}   (\url{http://wwwsi.supelec.fr/fb/Developpement.html#progs}).  GraphicConverter a évolué vers Carbon lorsque Mac~OS~X est sorti, et   au lieu de passer mes modules d'extension à Carbon, j'ai décidé   d'écrire une application Java combinant les fonctionnalités des deux   modules. Cela m'a permis de gérer l'historique des transformations   appliquées à une image et d'afficher les informations concernant la   période pour l'image complète ainsi que pour chacun de ses pixels.   En utilisant la classe BigInteger, j'ai pu corriger une erreur dans   le calcul de la période de la transformation du boulanger qui   provoque fréquemment des débordements arithmétiques lorsqu'on utilise   les \verb|unsigned long| de C.  Le résultat est \BouMaton, et j'espère que les utilisateurs des   modules GraphicConverter l'apprécieront, et que les utilisateurs de   Windows ou d'Unix profiteront de la devise «~coder une fois, exécuter   partout~» de Java...    \medskip    \noindent La version 1.0 est la première version publique de \BouMaton.  \par\smallskip  \noindent La version 1.1 règle un problème de rafraîchissement des images.  \par\smallskip  \noindent La version 1.2 améliore la gestion des situations où la   mémoire vient à manquer, et ajoute un dialogue permettant de choisir   la qualité de la compression JPEG lors de l'enregistrement des images.  \par\smallskip  \noindent La version 1.3 utilise un nouvel algorithme pour calculer   la période de la transformation du boulanger beaucoup plus rapidement.  \par\smallskip  \noindent La version 1.4 utilise le package   \filename{javax.imageio} et permet d'enregistrer les images au   format PNG.  \par\smallskip  \noindent La version 1.5 résoud un problème de lecture des images PNG.    \section{Détails techniques\label{sec:tech-details}}  Cette section expose des détails techniques de \BouMaton et peut   être ignorée par les utilisateurs qui souhaitent simplement appliquer   des transformations à leurs images.    \subsection{Traduire \BouMaton}  Le manuel de \BouMaton est écrit en \LaTeX. Vous pouvez vous inspirer   de la version anglaise ou de la version française du manuel pour le   traduire en une autre langue. Vous devez alors indiquer que la   traduction est de vous.  Les chaînes de caractères utilisées dans \BouMaton peuvent être   traduites en d'autres langues. Le fichier jar contient un fichier   \filename{BouMatonStrings.properties} qui correspond à la version   en anglais utilisée par défaut. Le fichier   \filename{BouMatonStrings\_fr.properties} est utilisé quand la   locale par défaut indique que la langue est le français. Si vous   souhaitez traduire \BouMaton en une autre langue, vous devez écrire   un fichier \filename{BouMatonStrings\_<lang>.properties}, où   \filename{<lang>} est le code de cette langue pour la locale (par   exemple \filename{de} pour l'allemand, \filename{it} pour l'italien   etc). La manière la plus simple d'écrire ce fichier est de partir   d'une copie d'un des fichiers existants et de traduire chaque   expression située à droite du premier signe «~=~» de chaque ligne.  Le nouveau fichier doit être ajouté à l'archive jar pour que les   nouvelles chaînes de caractères soient utilisées lorsque la locale   correspondante est active.  Si vous traduisez \BouMaton, merci de me faire parvenir les fichiers   correspondants afin que je les inclue dans les prochaines versions.   Si une traduction du manuel accompagne les fichiers, ce sera parfait.    \subsection{La transformation du boulanger}  L'étirement horizontal de l'image dans la transformation du boulanger   est obtenu en entrelaçant les pixels des lignes impaires avec ceux   des lignes paires. Le repliement consiste à couper l'image étirée à   la largeur de l'image de départ, puis à faire pivoter la partie   droite autour de son coin inférieur gauche, comme indiqué ci-dessous   pour une image \picdim{4}{4} :    \begin{center}    \newcommand{\pixbox}[2]{\makebox(1,1){\textsf{\scriptsize(#1,#2)}}}    \newcounter{pixx}    \newcounter{pixy}    \newcounter{pixnum}    \newcommand{\dopixbox}[2]{%      \put(\thepixx,\thepixy){\pixbox{#1}{#2}}%      \stepcounter{pixx}%      \bouline{\thepixy}{\thepixx}{\thepixnum}%    }    \newcommand{\bouline}[3]{%      \let\next=\relax      \ifnum#2<#3        \setcounter{pixy}{#1}%        \setcounter{pixx}{#2}%        \setcounter{pixnum}{#3}%        \let\next=\dopixbox      \fi      \next    }    \setlength{\unitlength}{0.5cm}    \begin{picture}(22,4)      \put(0,0){\framebox(4,4){}}      \multiput(0,1)(0,1){3}{\line(1,0){4}}      \multiput(1,0)(1,0){3}{\line(0,1){4}}      \bouline{3}{0}{4} 0 0  0 1  0 2  0 3      \bouline{2}{0}{4} 1 0  1 1  1 2  1 3      \bouline{1}{0}{4} 2 0  2 1  2 2  2 3      \bouline{0}{0}{4} 3 0  3 1  3 2  3 3      %%      \put(5,2){\vector(1,0){1}}      %%      \qbezier(0.5,3.9)(6,5)(7.5,2.9)\put(7.5,2.9){\circle*{0.12}}      \qbezier(0.5,2.1)(6,1)(8.5,2.1)\put(8.5,2.1){\circle*{0.12}}      %%      \put(7,1){\framebox(8,2){}}      \put(7,2){\line(1,0){8}}      \multiput(8,1)(1,0){7}{\line(0,1){2}}      \bouline{2}{7}{15} 0 0  1 0  0 1  1 1  0 2  1 2  0 3  1 3      \bouline{1}{7}{15} 2 0  3 0  2 1  3 1  2 2  3 2  2 3  3 3      %%      \put(16,2){\vector(1,0){1}}      %%      \put(11,1){\circle*{0.25}}      \put(11,0.9){\oval(3.5,3)[br]}      \put(11,-0.6){\vector(-1,0){0.5}}           %%      \put(18,0){\framebox(4,4){}}      \multiput(18,1)(0,1){3}{\line(1,0){4}}      \multiput(19,0)(1,0){3}{\line(0,1){4}}      \bouline{3}{18}{22} 0 0  1 0  0 1  1 1      \bouline{2}{18}{22} 2 0  3 0  2 1  3 1      \bouline{1}{18}{22} 3 3  2 3  3 2  2 2      \bouline{0}{18}{22} 1 3  0 3  1 2  0 2      %%      \put(22,2){\circle*{0.25}}      \put(22.2,2){\oval(3,3)[br]}\put(22.2,0.5){\vector(-1,0){0.1}}    \end{picture}  \end{center}  Il n'y a aucune perte d'information au cours de cette transformation,   et après un certain nombre d'itérations, l'image de départ reparaît.   Toutefois, je ne connais pas de formule donnant cette période pour   n'importe quelle image. Pour une image de \(2^m\) par \(2^m\) pixels,   l'image de départ reparaît après \(2m+1\) itérations. Pour une image   de \(2^m\) par \(2^n\) pixels, il faut attendre \((2m+1)(2n+1)+1\)   itérations.  Pour calculer la période de la transformation pour une image donnée,   \BouMaton calcule la période \(P(x,y)\) de chaque pixel de l'image   (le nombre d'itérations nécessaires pour qu'il reprenne sa position   initiale dans l'image). La période \(P\) pour l'image est le plus   petit multiple commun à toutes les périodes \(P(x,y)\) des pixels de   l'image. Ce calcul peut être assez long, et \BouMaton utilise un   flot de contrôle (thread) distinct pour le calculer, afin que l'on   puisse faire autre chose pendant qu'il s'exécute. La période de cette   transformation peut être très grande (896568225229163143800 pour une   image \picdim{360}{400}), et \BouMaton utilise la classe BigInteger   de Java pour calculer le PPCM des périodes des pixels.    Depuis la version 1.3, \BouMaton utilise un nouvel algorithme pour   calculer cette période bien plus rapidement qu'avant. Lorsqu'on   calcule la période d'un pixel, on trouve tous les pixels qui   appartiennent à son orbite. Tous ces pixels ont la même période   puisqu'ils appartiennent à la même orbite, il n'est donc pas   nécessaire de calculer leur période ultérieurement. Comme il y a en   général peu d'orbites dans une image, le nombre de périodes   \(P(x,y)\) à calculer est très fortement réduit lorsqu'on utilise   cette optimisation, et le calcul de la période de la transformation   du boulanger est maintenant aussi rapide que celui de la   transformation du photomaton.    \subsection{La transformation du photomaton}  Cette transformation éclate une image en ce qui semble être quatre   copies identiques de l'original. Toutefois, les quatre sous-images ne   sont pas exactement identiques car elles sont obtenues en prenant   pour chacune d'elle un pixel de chaque carré \picdim{4}{4} de l'image   de départ, comme indiqué si dessous pour une image \picdim{8}{8} :  \begin{center}    \newcommand{\pixbox}[2]{\makebox(1,1){\textsf{\scriptsize(#1,#2)}}}%     \newcounter{pixx}%     \newcounter{pixy}%     \newcounter{pixnum}    \newcommand{\dopixbox}[2]{%      \put(\thepixx,\thepixy){\pixbox{#1}{#2}}%      \stepcounter{pixx}%      \pholine{\thepixy}{\thepixx}{\thepixnum}%    }    \newcommand{\pholine}[3]{%      \let\next=\relax      \ifnum#2<#3        \setcounter{pixy}{#1}%        \setcounter{pixx}{#2}%        \setcounter{pixnum}{#3}%        \let\next=\dopixbox      \fi      \next    }    \setlength{\unitlength}{0.5cm}    \begin{picture}(19,9)      \put(0,0){\framebox(8,8){}}      \multiput(1,0)(1,0){7}{\line(0,1){8}}      \multiput(0,1)(0,1){7}{\line(1,0){8}}      \pholine{7}{0}{8} 0 0  0 1  0 2  0 3  0 4  0 5  0 6  0 7      \pholine{6}{0}{8} 1 0  1 1  1 2  1 3  1 4  1 5  1 6  1 7      \pholine{5}{0}{8} 2 0  2 1  2 2  2 3  2 4  2 5  2 6  2 7      \pholine{4}{0}{8} 3 0  3 1  3 2  3 3  3 4  3 5  3 6  3 7      \pholine{3}{0}{8} 4 0  4 1  4 2  4 3  4 4  4 5  4 6  4 7      \pholine{2}{0}{8} 5 0  5 1  5 2  5 3  5 4  5 5  5 6  5 7      \pholine{1}{0}{8} 6 0  6 1  6 2  6 3  6 4  6 5  6 6  6 7      \pholine{0}{0}{8} 7 0  7 1  7 2  7 3  7 4  7 5  7 6  7 7      %      \put(9,4){\vector(1,0){1}}      %      \put(11,0){\framebox(8,8){}}      \multiput(12,0)(1,0){7}{\line(0,1){8}}      \multiput(11,1)(0,1){7}{\line(1,0){8}}      \pholine{7}{11}{19} 0 0  0 2  0 4  0 6  0 1  0 3  0 5  0 7      \pholine{6}{11}{19} 2 0  2 2  2 4  2 6  2 1  2 3  2 5  2 7      \pholine{5}{11}{19} 4 0  4 2  4 4  4 6  4 1  4 3  4 5  4 7      \pholine{4}{11}{19} 6 0  6 2  6 4  6 6  6 1  6 3  6 5  6 7      \pholine{3}{11}{19} 1 0  1 2  1 4  1 6  1 1  1 3  1 5  1 7      \pholine{2}{11}{19} 3 0  3 2  3 4  3 6  3 1  3 3  3 5  3 7      \pholine{1}{11}{19} 5 0  5 2  5 4  5 6  5 1  5 3  5 5  5 7      \pholine{0}{11}{19} 7 0  7 2  7 4  7 6  7 1  7 3  7 5  7 7      %%      \qbezier(0.5,7.9)(8,9)(11.5,7.9)\put(11.5,7.9){\circle*{0.12}}      \qbezier(1.5,7.9)(9,10)(15.5,7.9)\put(15.5,7.9){\circle*{0.12}}      \qbezier(0.5,6.1)(8,3)(11.5,3.1)\put(11.5,3.1){\circle*{0.12}}      \qbezier(1.5,6.1)(8,1)(15.5,3.1)\put(15.5,3.1){\circle*{0.12}}      %%      \thicklines      \put(11,4){\line(1,0){8}}      \put(15,0){\line(0,1){8}}    \end{picture}  \end{center}    Puisqu'aucune information n'est perdue au cours de cette   transformation, et que le nombre de permutations des pixels de   l'image est fini, l'image de départ reparaît inévitablement après un   certain nombre d'itérations. Je ne connais pas de formule donnant   cette période pour une image quelconque. Pour une image de \(2^m\)   par \(2^n\) pixels, la période est le plus petit multiple commun à   \(m\) et \(n\). Pour une image \picdim{512}{512}, l'image reparaît   après 9 itérations, alors que pour une image \picdim{128}{256}, il   faudra attendre 56 itérations.  Toutefois, la période de la transformation du photomaton est  beaucoup plus facile à calculer que celle de la transformation du  boulanger. En effet, l'abscisse d'un point a une période qui ne  dépend que de sa valeur, et il en est de même pour son ordonnée.  En d'autres termes, tous les points situés sur une ligne verticale  reviennent sur cette ligne au bout du même nombre d'itérations, et  il en est de même pour les lignes horizontales. La période  \(P(x,y)\) pour un pixel est le plus petit multiple commun aux  périodes de son abscisse et de son ordonnée. La période de  l'image complète est le PPCM des \(P(x,y)\) pour tous les pixels de  l'image.    \subsection{Optimisations}  Quand la période \(P\) d'une transformation pour une image a été   calculée, \BouMaton l'utilise pour optimiser le calcul de \(n\)   itérations de la transformation : il ne calcule que \(n \bmod P\)   itérations. Si \(n \bmod P\) est plus proche de \(P\) que de 0, il   calcule seulement \(P - (n \bmod P)\) itérations de la transformation   inverse. De plus, pour chaque pixel de l'image, \BouMaton utilise la   période de la transformation pour ce pixel de la même manière afin   d'optimiser le calcul de la nouvelle position de ce pixel.    \subsection{Enregistrement en JPEG des images transformées}  \BouMaton permet d'enregistrer les images transformées aux formats   JPEG et PNG. Nous avons vu qu'aucune des transformations ne perd  d'information sur les images, de sorte qu'il est toujours possible  de retrouver l'original en appliquant les transformations inverses.   Toutefois, comme la compression JPEG supprime des informations de  l'image, une image transformée, enregistrée en JPEG, puis  rechargée dans \BouMaton ne donnera pas l'image de départ si on  lui applique les transformations inverses.  L'aspect général de  l'image sera préservé, mais les couleurs seront délavées et  l'image sera bruitée à cause de la perte des informations que la  compression JPEG a éliminées parce qu'elles ne semblaient pas  critiques dans l'image transformée. Ce problème disparaît avec le   format PNG puisqu'il ne supprime aucune information.\end{document}
+%  BouMaton, a program to compute transformations on pictures.
+%  Copyright (C) 2019  Fr√©d√©ric Boulanger (frederic.boulanger@centralesupelec.fr)
+% 
+%  This program is free software: you can redistribute it and/or modify
+%  it under the terms of the GNU General Public License as published by
+%  the Free Software Foundation, either version 3 of the License, or
+%  (at your option) any later version.
+% 
+%  This program is distributed in the hope that it will be useful,
+%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%  GNU General Public License for more details.
+% 
+%  You should have received a copy of the GNU General Public License
+%  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+% ¬© Fr√©d√©ric Boulanger 1997-2019
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{ifthen}
+\usepackage{xspace}
+\usepackage{overpic}
+\usepackage{mathptmx}
+\usepackage[scaled=0.9]{helvet}
+\usepackage{courier}
+%\usepackage{garamath}
+%\usepackage{gillsans}
+\usepackage[francais]{babel}
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\bfseries}
+% Num√©ro de section dans la marge
+\makeatletter
+\def\@seccntformat#1{%
+  \protect\makebox[0pt][r]{%
+    \csname the#1\endcsname\quad
+  }%
+}
+\makeatother
+
+\usepackage[nohead,top=1cm,left=2.5cm,right=2cm,bottom=1.5cm,footskip=1cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\lfoot{\textsf{\footnotesize BouMaton <\href{https://wdi.supelec.fr/boulanger/Software/}{wdi.supelec.fr/boulanger/Software/}>}}
+\cfoot{\thepage}
+\rfoot{\textsf{\footnotesize
+  \href{mailto:frederic.boulanger@centralesupelec.fr}{<frederic.boulanger@centralesupelec.fr>}%
+}}
+\renewcommand{\footrulewidth}{0pt}
+
+\usepackage[%
+  pdfauthor={Fr√©d√©ric Boulanger},
+  pdftitle={Manuel de BouMaton},
+  pdffitwindow,
+  pdfstartview=XYZ,
+  pdfpagemode=None
+]{hyperref}
+
+\newcommand{\signature}{%
+  \vfill
+  \begin{flushright}
+    \href{mailto:Frederic.Boulanger@supelec.fr}{Fr√©d√©ric Boulanger},
+    \the\year-\ifnum\the\month<10 0\fi\the\month-\ifnum\the\day<10 0\fi\the\day
+  \end{flushright}
+}
+\AtEndDocument{\signature}
+
+%\setlength{\parindent}{0pt}
+%\setlength{\parskip}{1ex plus 0.5ex minus 0.5ex}
+
+\newcommand{\bouVersion}{2.0\xspace}
+\newcommand{\bouRelease}{2019-04-24\xspace}
+
+\newcommand{\BouMaton}{\textsf{BouMaton}\xspace}
+\newcommand{\filename}[1]{\textsf{#1}}
+\newcommand{\menu}[1]{\textsf{\textbf{#1}}}
+\newcommand{\picdim}[2]{#1\,\(\times\)\,#2}
+
+\begin{document}
+  \begin{center}
+    \textsf{\textbf{\large BouMaton v\bouVersion, \bouRelease}}
+    
+    \includegraphics[scale=0.5]{icone}
+    
+    \href{mailto:Frederic.Boulanger@centralesupelec.fr}{\textsf{Fr√©d√©ric Boulanger}}
+  \end{center}
+  
+  
+  \section{Qu'est-ce ?}
+  \BouMaton est une application qui calcule deux transformations 
+  d'images :
+  \begin{itemize}
+    \item la transformation du \textbf{photomaton} qui r√©partit les 
+    pixels de l'image vers ses quatre coins, donnant ainsi un r√©sultat 
+    qui semble contenir quatre sous-images identiques √† l'original, 
+    comme dans un photomaton ;
+    
+    \item la transformation du \textbf{boulanger} qui √©tire une image 
+    horizontalement avant de la replier afin qu'elle conserve sa taille 
+    d'origine. Cette man≈ìuvre est similaire au geste du boulanger qui 
+    p√©trit sa p√¢te, d'o√π le nom.
+  \end{itemize}
+  
+  Ces deux transformations conservent toute l'information pr√©sente 
+  dans l'image, il est donc toujours possible de retrouver l'original 
+  en appliquant les transformations inverses. De plus, ces 
+  transformations sont p√©riodiques : apr√®s un certain nombre 
+  d'it√©rations, on retrouve l'image d'origine.
+  
+  \BouMaton peut appliquer ces transformations et leurs inverses un 
+  nombre quelconque de fois. Il calcule la p√©riode des transformations 
+  pour l'image choisie, et conserve un historique des transformations 
+  appliqu√©es. Il peut aussi enregistrer le r√©sultat des transformations 
+  aux formats JPEG et PNG.
+    
+  \section{Pour d√©marrer}
+  \BouMaton est une application Java. Sur la plupart des syst√®mes
+  avec interface graphique, il suffit de double-cliquer le fichier
+  \filename{BouMaton.jar} pour la lancer. Dans un terminal en ligne de
+  commande, tapez \verb|java -jar BouMaton.jar| pour lancer \BouMaton.
+  Sous Mac~OS~X, utilisez plut√¥t l'application \filename{BouMaton}
+  (mais le fichier \filename{BouMaton.jar} ou la ligne de commande
+  fonctionnent aussi).
+  
+  Lorsque \BouMaton est lanc√©, choisissez l'article \menu{Ouvrir...} du 
+  menu \menu{Fichier} pour choisir une image. Les formats reconnus sont 
+  ceux support√©s par Java~1.4 : jpeg, gif et png.
+  
+  Cliquez sur l'un des boutons \menu{boulanger} ou \menu{photomaton}, 
+  ou s√©lectionnez l'article correspondant dans le menu 
+  \menu{Transformations} pour appliquer une transformation √† l'image 
+  affich√©e. Vous pouvez indiquer le nombre d'it√©rations de la 
+  transformation (n√©gatif pour obtenir la transformation inverse) dans 
+  le champ de saisie situ√© entre les deux boutons.
+  
+  Si vous avez lanc√© le calcul d'un grand nombre d'it√©rations d'une 
+  transformation sur une image de grande taille et trouvez que cela 
+  prend trop de temps, vous pouvez interrompre le calcul gr√¢ce √† 
+  l'article \menu{Interrompre} du menu \menu{Transformations}.
+  
+  \section{Une description plus d√©taill√©e}
+  La fen√™tre principale de \BouMaton contient les √©l√©ments suivants :
+  \begin{center}
+    \sffamily
+    \begin{overpic}[%
+                    scale=.4,
+                    %grid
+                   ]{vue_generale_fr}
+      \put(-10,80){\makebox(0,0)[br]{zone d'affichage}}
+      \put(-10,80){\vector(2,-1){25}}
+      %
+      \put(-10,20){\makebox(0,0)[br]{avancement du calcul de la p√©riode}}
+      \put(-10,20){\vector(3,-1){12}}
+      %
+      \put(-10,12){\makebox(0,0)[br]{transformation du boulanger}}
+      \put(-10,12){\vector(4,-1){12}}
+      %
+      \put(20,-2){\makebox(0,0)[tr]{dimensions de l'image}}
+      \put(20,-2){\vector(1,2){8}}
+      %
+      \put(36,-2){\makebox(0,0)[tl]{nombre d'it√©rations}}
+      \put(35,-2){\vector(0,1){8}}
+      %
+      \put(80,12){\makebox(0,0)[bl]{transformation du photomaton}}
+      \put(80,12){\vector(-4,-1){10}}
+      %
+      \put(80,20){\makebox(0,0)[bl]{p√©riode de la transformation du photomaton}}
+      \put(80,20){\vector(-3,-1){17}}
+    \end{overpic}
+  \end{center}
+
+  \vspace{2cm}
+  
+  La zone d'affichage montre le r√©sultat de l'application des 
+  transformations √† l'image. La barre d'avancement du calcul de la 
+  p√©riode indique que la p√©riode de la transformation du boulanger pour 
+  cette image est en cours de calcul. Quand le calcul sera termin√©, la 
+  barre d'avancement sera remplac√©e par le r√©sultat.
+
+  Les boutons \menu{boulanger} et \menu{photomaton} provoquent le 
+  calcul de la transformation correspondante, appliqu√©e autant de fois 
+  qu'indiqu√© dans le champ de saisie.
+
+  Sur la droite, vous pouvez voir la p√©riode de la transformation du 
+  photomaton pour cette image (elle est beaucoup plus rapide √† calculer 
+  que celle de la transformation du boulanger).
+
+  Dans l'exemple suivant, la zone d'affichage montre le r√©sultat de la 
+  transformation du photomaton appliqu√©e √† l'image de d√©part, et le 
+  programme est en train de calculer 500 it√©rations de la 
+  transformation du photomaton :
+  \begin{center}
+    \sffamily
+    \begin{overpic}[%
+                    scale=.4,
+                    %grid
+                   ]{photomaton}
+      \put(-10,12){\makebox(0,0)[br]{%
+        \parbox{70\unitlength}{%
+          d√©sactiv√© car une transformation est en cours de calcul
+        }%
+      }}
+      \put(-10,12){\vector(4,-1){12}}
+      %
+      \put(30,-17){\makebox(0,0)[t]{nous voulons 500 it√©rations}}
+      \put(30,-15){\vector(1,4){5}}
+      %
+      \put(80,12){\makebox(0,0)[bl]{%
+        \parbox{70\unitlength}{%
+          d√©sactiv√© car une transformation est en cours de calcul
+        }%
+      }}
+      \put(80,15){\vector(-4,-1){17}}
+      %
+      \put(80,0){\makebox(0,0)[tl]{%
+        \parbox{70\unitlength}{%
+          avancement du calcul des 500 it√©rations de la transformation du 
+          photomaton
+        }%
+      }}
+      \put(80,0){\vector(-4,1){14}}
+    \end{overpic}
+  \end{center}
+  
+  \vspace{2cm}
+  
+  Pour la transformation du boulanger, le comportement est similaire : 
+  dans l'exemple suivant, le r√©sultat de la transformation du boulanger 
+  appliqu√©e √† l'image de d√©part est affich√©, et le programme est en 
+  train de calculer 500 it√©rations de la transformation du boulanger :
+  \begin{center}
+    \sffamily
+    \begin{overpic}[%
+                    scale=.4,
+                    %grid
+                   ]{boulanger}
+      \put(-10,12){\makebox(0,0)[br]{%
+        \parbox{70\unitlength}{%
+          d√©sactiv√© car une transformation est en cours de calcul
+        }%
+      }}
+      \put(-10,12){\vector(4,-1){12}}
+      %
+      \put(30,-17){\makebox(0,0)[t]{nous voulons 500 it√©rations}}
+      \put(30,-15){\vector(1,4){5}}
+      %
+      \put(80,12){\makebox(0,0)[bl]{%
+        \parbox{70\unitlength}{%
+          d√©sactiv√© car une transformation est en cours de calcul
+        }%
+      }}
+      \put(80,15){\vector(-4,-1){17}}
+      %
+      \put(-10,0){\makebox(0,0)[tr]{%
+        \parbox{70\unitlength}{%
+          avancement du calcul des 500 it√©rations de la transformation du 
+          boulanger
+        }%
+      }}
+      \put(-10,0){\vector(4,1){10}}
+    \end{overpic}
+  \end{center}
+  
+  \vspace{2cm}
+
+  \section{Enregistrement des images}
+	\BouMaton est capable d'enregistrer les images aux formats JPEG et PNG.
+
+  Le format JPEG donne des fichiers plus petits pour les
+  photographies, mais il supprime des d√©tails qui sont consid√©r√©s
+  comme mineurs lorsqu'on prend en compte la mani√®re dont un √™tre
+  humain voit.  Lorsqu'on enregistre une image au format JPEG, on peut
+  choisir la quantit√© d'information qui sera perdue en ajustant la
+  qualit√© de l'image enregistr√©e.Le r√©glage varie de 0 (forte
+  compression, fichier de petite taille, mais qualit√© tr√®s faible), √†
+  100 (compression faible, fichier de plus grande taille, mais
+  meilleure qualit√©).  Pour vous aider dans votre choix, \BouMaton
+  peut calculer une estimation de la taille qu'aurait le fichier avec
+  le r√©glage courant si vous cliquez le bouton \menu{Calculer la
+  taille} de ce dialogue.  Si la taille estim√©e est plus petite que la
+  taille du fichier JPEG d'origine, votre r√©glage est s√ªrement trop
+  faible.  Si elle est beaucoup plus √©lev√©e, votre r√©glage est
+  s√ªrement trop fort.  Comme les transformations rendent l'image de
+  plus en plus complexe, il est normal que la taille estim√©e croisse
+  pour les r√©sultats de transformations successives, √† r√©glage de
+  qualit√© JPEG constant.
+  
+  Le format PNG n'√©limine aucune information et fournit donc
+  g√©n√©ralement des fichiers beaucoup plus gros que le format JPEG. 
+  Toutefois, ce format utilise un algorithme de compression sans 
+  perte qui est plus efficace que la compression JPEG sur les images 
+  qui ne contiennent que des lignes et des zones de couleur uniforme. 
+  Comme le format PNG ne supprime pas d'information, vous pouvez 
+  l'utiliser pour enregistrer des images transform√©es dont vous 
+  souhaitez restaurer plus tard l'aspect d'origine en appliquant les 
+  transformations inverses.
+    
+%   \section{Enregistrement des images en JPEG}
+%   Si \BouMaton a trouv√© les classes n√©cessaires sur votre
+%   ordinateur, l'article \menu{Enregistrer...} du menu \menu{Fichier}
+%   est accessible et vous permet d'enregistrer les merveilleuses images
+%   que vous obtiendrez avec \BouMaton. Le seul format de fichier
+%   support√© pour l'enregistrement est le JPEG. Ce format r√©duit la
+%   taille du fichier contenant une image en ignorant les d√©tails qu'il
+%   consid√®re comme moins important √† cause de la mani√®re dont l'≈ìil
+%   humain voit. Quand vous enregistrer une image dans un fichier,
+%   \BouMaton affiche un dialogue vous permettant de d√©terminer la
+%   quantit√© d'information √† pr√©server lors de la compression JPEG.
+%   Le r√©glage varie de 0 (forte compression, fichier de petite taille,
+%   mais qualit√© tr√®s faible), √† 100 (compression faible, fichier de
+%   plus grande taille, mais meilleure qualit√©). Pour vous aider dans
+%   votre choix, \BouMaton peut calculer une estimation de la taille
+%   qu'aurait le fichier avec le r√©glage courant si vous cliquez le
+%   bouton \menu{Calculer la taille} de ce dialogue. Si la taille
+%   estim√©e est plus petite que la taille du fichier JPEG d'origine,
+%   votre r√©glage est s√ªrement trop faible. Si elle est beaucoup plus
+%   √©lev√©e, votre r√©glage est s√ªrement trop fort. Comme les
+%   transformations rendent l'image de plus en plus complexe, il est
+%   normal que la taille estim√©e croisse pour les r√©sultats de
+%   transformations successives, √† r√©glage de qualit√© JPEG constant.
+  
+  \section{Historique des transformations}
+  \BouMaton conserve la trace des transformations appliqu√©es √† une 
+  image depuis son chargement. Vous pouvez afficher cet historique 
+  gr√¢ce √† l'article \menu{Afficher l'historique} du menu 
+  \menu{Transformations} :
+  \begin{center}
+    \includegraphics[scale=0.4]{history_fr}
+  \end{center}
+  Les transformations successives identiques sont fusionn√©es dans 
+  l'historique, de sorte que deux transformations du photomaton 
+  successives donneront une seule entr√©e (avec un nombre d'it√©rations 
+  √©gal √† 2) dans l'historique. Chaque entr√©e donne la nature de la 
+  transformation, le nombre d'it√©rations demand√©es, le nombre 
+  d'it√©rations effectivement calcul√©es, et le temps mis pour effectuer 
+  le calcul. Le nombre d'it√©rations effectivement calcul√©es peut √™tre 
+  inf√©rieur au nombre d'it√©rations demand√©es, car calculer 3225 
+  it√©rations d'une transformation dont la p√©riode est 3222 revient 
+  exactement au m√™me que calculer seulement 3 it√©rations, ce qui prend 
+  beaucoup moins de temps. Avec la m√™me p√©riode, si vous demandez 3200 
+  it√©rations, \BouMaton calculera 22 it√©rations de la transformation 
+  inverse puisque c'est plus rapide.
+
+  Vous pouvez toujours revenir √† l'image d'origine gr√¢ce √† l'article 
+  \menu{Restaurer l'original} du menu \menu{Fichier}. Cela efface 
+  aussi l'historique des transformations.
+  
+  \section{Informations sur les transformations}
+  Lorsqu'il calcule la p√©riode des transformations, \BouMaton collecte 
+  des informations sur la p√©riode de chaque pixel de l'image. Au cours 
+  de transformations successives, chaque pixel parcourt une orbite (il 
+  passe par une suite de positions successives) et peut revenir √† sa 
+  position initiale bien avant que toute l'image retrouve sa forme 
+  initiale. La p√©riode de la transformation est le plus petit nombre 
+  d'it√©rations tel que tous les pixels de l'image ont fait un nombre 
+  entier de tours sur leur orbite.
+  
+  Il peut arriver qu'apr√®s un certain nombre d'it√©rations, un grand 
+  nombre de pixels soient revenus √† leur position initiale, sans 
+  qu'ils le soient tous. L'image de d√©part semble alors √©merger d'une 
+  sorte de brouillard al√©atoire de pixels.
+
+  En choisissant l'article \menu{Afficher les informations} du menu 
+  \menu{Transformations}, vous affichez les informations collect√©es 
+  sur les deux transformations. Les informations concernant la 
+  transformation du boulanger sont assez longues √† calculer et 
+  n'apparaissent que lorsque la p√©riode de cette transformation est 
+  calcul√©e.
+  
+  \begin{center}
+    \includegraphics[scale=0.4]{info_exemple_fr}
+  \end{center}
+  Cet exemple montre les informations obtenues pour une image de 
+  \picdim{360}{400} pixels (les p√©riodes ne d√©pendent que de la 
+  g√©om√©trie de l'image, pas de son contenu). On peut voir que la 
+  p√©riode de la transformation du boulanger est vraiment grande, mais 
+  qu'apr√®s 67911 it√©rations, 47,16\,\% des pixels ont retrouv√© leur 
+  position initiale.
+  
+  \section{Exemples}
+  Les suites d'images suivantes montrent l'√©volution d'une image pour 
+  chacune des transformations. Partant de l'original, on passe 
+  ensuite √† des images o√π toute information semble perdue, ainsi qu'√† 
+  d'autres o√π des motifs fant√¥mes apparaissent, pour finalement 
+  revenir √† l'image d'origine.
+  
+  \subsection{It√©rations de la transformation du photomaton}
+
+  {\sffamily\small
+  \begin{tabular}{@{}*5{p{0.18\textwidth}}@{}}
+    \includegraphics[width=\linewidth]{example}
+    &
+    \includegraphics[width=\linewidth]{example_p1}
+    &
+    \includegraphics[width=\linewidth]{example_p3}
+    &
+    \includegraphics[width=\linewidth]{example_p8}
+    &
+    \includegraphics[width=\linewidth]{example_p179}
+    \\
+      image d'origine
+    & apr√®s une it√©ration
+    & apr√®s 3 it√©rations
+    & apr√®s 8 it√©rations
+    & quelque chose appara√Æt apr√®s 179 it√©rations
+    \\[10pt]
+    \includegraphics[width=\linewidth]{example_p180}
+    &
+    \includegraphics[width=\linewidth]{example_p_6}
+    &
+    \includegraphics[width=\linewidth]{example_p_2}
+    &
+    \includegraphics[width=\linewidth]{example_p_1}
+    &
+    \includegraphics[width=\linewidth]{example}
+    \\
+      on est pr√®s de l'original apr√®s 180 it√©rations
+    & 6 it√©rations avant le retour √† l'original
+    & 2 it√©rations avant le retour √† l'original
+    & 1 it√©ration avant le retour √† l'original
+    & retour √† l'original apr√®s 3222 it√©rations
+  \end{tabular}
+  }
+  
+  \subsection{It√©rations de la transformation du boulanger}
+  {\sffamily\small
+  \begin{tabular}{@{}*5{p{0.18\textwidth}}@{}}
+    \includegraphics[width=\linewidth]{example}
+    &
+    \includegraphics[width=\linewidth]{example_b1}
+    &
+    \includegraphics[width=\linewidth]{example_b4}
+    &
+    \includegraphics[width=\linewidth]{example_b20}
+    &
+    \includegraphics[width=\linewidth]{example_b27656}
+    \\
+      image d'origine
+    & apr√®s une it√©ration
+    & apr√®s 4 it√©rations
+    & apr√®s 20 it√©rations
+    & 19,2\% des pixels sont en place apr√®s 27656 it√©rations
+    \\[10pt]
+    \includegraphics[width=\linewidth]{example_b67911}
+    &
+    \includegraphics[width=\linewidth]{example_b_6}
+    &
+    \includegraphics[width=\linewidth]{example_b_2}
+    &
+    \includegraphics[width=\linewidth]{example_b_1}
+    &
+    \includegraphics[width=\linewidth]{example}
+    \\
+      47.2\% des pixels sont en place apr√®s 67911 it√©rations
+    & 6 it√©rations avant le retour √† l'original
+    & 2 it√©rations avant le retour √† l'original
+    & 1 it√©ration avant le retour √† l'original
+    & retour √† l'original apr√®s {\tiny 896568225229163143800} it√©rations
+  \end{tabular}
+  }
+  
+  \section{Licence}
+  \newlength{\savedindent}
+  \setlength{\savedindent}{\parindent}
+  \setlength{\parindent}{0pt}
+  \newlength{\savedskip}
+  \setlength{\savedskip}{\parskip}
+  \setlength{\parskip}{1ex}
+  
+  \BouMaton est Copyright ¬© Fr√©d√©ric Boulanger 1997-2019.
+  
+  Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le modifier
+  suivant les termes de la GNU General Public License telle que publi√©e par la
+  Free Software Foundation. Vous pouvez utiliser soit la version 3 de la licence, 
+  soit, √† votre gr√©, toute version ult√©rieure.
+  
+  Ce programme est distribu√© dans l'espoir qu'il sera utile, mais sans aucune garantie, 
+  y compris la garantie implicite de qualit√© marchande ou d'ad√©quation √† un objectif
+  particulier. Consultez la GNU General Public License pour plus de d√©tails.
+  
+  Une copie de cette licence vous est fournie avec ce programme, si ce n'est pas le cas, 
+  consultez :
+  \begin{center}
+  	\url{http://www.gnu.org/licenses}
+  \end{center}
+  
+  \setlength{\parindent}{\savedindent}
+  \setlength{\parskip}{\savedskip}
+  
+  \section{L'histoire de \BouMaton}
+  Tout a commenc√© avec un article de Jean-Paul Delahaye et Philippe
+  Mathieu dans le num√©ro de d√©cembre 1997 (242) de ¬´~Pour la
+  Science~¬ª.  Cet article pr√©sentait les transformations du
+  boulanger et du photomaton, et j'ai alors commenc√© √† coder ces
+  transformations en C. Pour √©viter d'avoir √† √©crire une
+  application compl√®te, j'ai utilis√© le m√©canisme de modules
+  d'extension de GraphicConverter, une application pour
+  Mac~OS qui est capable de lire et de cr√©er presque n'importe quel
+  type de fichier graphique
+  (\url{http://www.bonnaure.com/GraphicConverter/info.html}). Cela 
+  d√©boucha sur la cr√©ation de deux modules d'extension nomm√©s 
+  \filename{PhotoMaton} et \filename{Boulanger}.
+
+  GraphicConverter a √©volu√© vers Carbon lorsque Mac~OS~X est sorti, et 
+  au lieu de passer mes modules d'extension √† Carbon, j'ai d√©cid√© 
+  d'√©crire une application Java combinant les fonctionnalit√©s des deux 
+  modules. Cela m'a permis de g√©rer l'historique des transformations 
+  appliqu√©es √† une image et d'afficher les informations concernant la 
+  p√©riode pour l'image compl√®te ainsi que pour chacun de ses pixels. 
+  En utilisant la classe BigInteger, j'ai pu corriger une erreur dans 
+  le calcul de la p√©riode de la transformation du boulanger qui 
+  provoque fr√©quemment des d√©bordements arithm√©tiques lorsqu'on utilise 
+  les \verb|unsigned long| de C.
+
+  Le r√©sultat est \BouMaton, et j'esp√®re que les utilisateurs des 
+  modules GraphicConverter l'appr√©cieront, et que les utilisateurs de 
+  Windows ou d'Unix profiteront de la devise ¬´~coder une fois, ex√©cuter 
+  partout~¬ª de Java...
+  
+  \medskip
+  
+  \noindent La version 1.0 est la premi√®re version publique de \BouMaton.
+  \par\smallskip
+  \noindent La version 1.1 r√®gle un probl√®me de rafra√Æchissement des images.
+  \par\smallskip
+  \noindent La version 1.2 am√©liore la gestion des situations o√π la 
+  m√©moire vient √† manquer, et ajoute un dialogue permettant de choisir 
+  la qualit√© de la compression JPEG lors de l'enregistrement des images.
+  \par\smallskip
+  \noindent La version 1.3 utilise un nouvel algorithme pour calculer 
+  la p√©riode de la transformation du boulanger beaucoup plus rapidement.
+  \par\smallskip
+  \noindent La version 1.4 utilise le package 
+  \filename{javax.imageio} et permet d'enregistrer les images au 
+  format PNG.
+  \par\smallskip
+  \noindent La version 1.5 r√©soud un probl√®me de lecture des images PNG.
+  \par\smallskip
+  \noindent La version 2.0 est une mise √† jour du code apr√®s 13 ans sans changement. 
+  Il en existe une version pour Java 8 et une pour Java 11.
+  
+  \section{D√©tails techniques\label{sec:tech-details}}
+  Cette section expose des d√©tails techniques de \BouMaton et peut 
+  √™tre ignor√©e par les utilisateurs qui souhaitent simplement appliquer 
+  des transformations √† leurs images.
+  
+  \subsection{Traduire \BouMaton}
+  Le manuel de \BouMaton est √©crit en \LaTeX. Vous pouvez vous inspirer 
+  de la version anglaise ou de la version fran√ßaise du manuel pour le 
+  traduire en une autre langue. Vous devez alors indiquer que la 
+  traduction est de vous.
+
+  Les cha√Ænes de caract√®res utilis√©es dans \BouMaton peuvent √™tre 
+  traduites en d'autres langues. Deux classes 
+  \filename{BouMatonStrings.properties} et \filename{BouMatonStrings\_fr.properties} 
+  contiennent respectivement les cha√Ænes de caract√®res en anglais et en fran√ßais. 
+	Le fichier \filename{BouMatonStrings\_fr.properties} est utilis√© quand la 
+  locale par d√©faut indique que la langue est le fran√ßais, sinon, c'est 
+  \filename{BouMatonStrings.properties} qui est utilis√©. Si vous 
+  souhaitez traduire \BouMaton en une autre langue, vous devez √©crire 
+  un fichier \filename{BouMatonStrings\_<lang>.java}, o√π 
+  \filename{<lang>} est le code de cette langue pour la locale (par 
+  exemple \filename{de} pour l'allemand, \filename{it} pour l'italien 
+  etc). La mani√®re la plus simple d'√©crire ce fichier est de partir 
+  d'une copie d'un des fichiers existants et de traduire chaque 
+  expression situ√©e en second argument de \texttt{strings.put} sur chaque ligne.
+  Le nouveau fichier doit √™tre ajout√© √† l'archive jar une fois compil√© pour que les 
+  nouvelles cha√Ænes de caract√®res soient utilis√©es lorsque la locale 
+  correspondante est active.
+
+  Si vous traduisez \BouMaton, merci de me faire parvenir les fichiers 
+  correspondants afin que je les inclue dans les prochaines versions. 
+  Si une traduction du manuel accompagne les fichiers, ce sera encore mieux.
+  
+  \subsection{La transformation du boulanger}
+  L'√©tirement horizontal de l'image dans la transformation du boulanger 
+  est obtenu en entrela√ßant les pixels des lignes impaires avec ceux 
+  des lignes paires. Le repliement consiste √† couper l'image √©tir√©e √† 
+  la largeur de l'image de d√©part, puis √† faire pivoter la partie 
+  droite autour de son coin inf√©rieur gauche, comme indiqu√© ci-dessous 
+  pour une image \picdim{4}{4} :
+  
+  \begin{center}
+    \newcommand{\pixbox}[2]{\makebox(1,1){\textsf{\scriptsize(#1,#2)}}}
+    \newcounter{pixx}
+    \newcounter{pixy}
+    \newcounter{pixnum}
+    \newcommand{\dopixbox}[2]{%
+      \put(\thepixx,\thepixy){\pixbox{#1}{#2}}%
+      \stepcounter{pixx}%
+      \bouline{\thepixy}{\thepixx}{\thepixnum}%
+    }
+    \newcommand{\bouline}[3]{%
+      \let\next=\relax
+      \ifnum#2<#3
+        \setcounter{pixy}{#1}%
+        \setcounter{pixx}{#2}%
+        \setcounter{pixnum}{#3}%
+        \let\next=\dopixbox
+      \fi
+      \next
+    }
+    \setlength{\unitlength}{0.5cm}
+    \begin{picture}(22,4)
+      \put(0,0){\framebox(4,4){}}
+      \multiput(0,1)(0,1){3}{\line(1,0){4}}
+      \multiput(1,0)(1,0){3}{\line(0,1){4}}
+      \bouline{3}{0}{4} 0 0  0 1  0 2  0 3
+      \bouline{2}{0}{4} 1 0  1 1  1 2  1 3
+      \bouline{1}{0}{4} 2 0  2 1  2 2  2 3
+      \bouline{0}{0}{4} 3 0  3 1  3 2  3 3
+      %%
+      \put(5,2){\vector(1,0){1}}
+      %%
+      \qbezier(0.5,3.9)(6,5)(7.5,2.9)\put(7.5,2.9){\circle*{0.12}}
+      \qbezier(0.5,2.1)(6,1)(8.5,2.1)\put(8.5,2.1){\circle*{0.12}}
+      %%
+      \put(7,1){\framebox(8,2){}}
+      \put(7,2){\line(1,0){8}}
+      \multiput(8,1)(1,0){7}{\line(0,1){2}}
+      \bouline{2}{7}{15} 0 0  1 0  0 1  1 1  0 2  1 2  0 3  1 3
+      \bouline{1}{7}{15} 2 0  3 0  2 1  3 1  2 2  3 2  2 3  3 3
+      %%
+      \put(16,2){\vector(1,0){1}}
+      %%
+      \put(11,1){\circle*{0.25}}
+      \put(11,0.9){\oval(3.5,3)[br]}
+      \put(11,-0.6){\vector(-1,0){0.5}}     
+      %%
+      \put(18,0){\framebox(4,4){}}
+      \multiput(18,1)(0,1){3}{\line(1,0){4}}
+      \multiput(19,0)(1,0){3}{\line(0,1){4}}
+      \bouline{3}{18}{22} 0 0  1 0  0 1  1 1
+      \bouline{2}{18}{22} 2 0  3 0  2 1  3 1
+      \bouline{1}{18}{22} 3 3  2 3  3 2  2 2
+      \bouline{0}{18}{22} 1 3  0 3  1 2  0 2
+      %%
+      \put(22,2){\circle*{0.25}}
+      \put(22.2,2){\oval(3,3)[br]}\put(22.2,0.5){\vector(-1,0){0.1}}
+    \end{picture}
+  \end{center}
+
+  Il n'y a aucune perte d'information au cours de cette transformation, 
+  et apr√®s un certain nombre d'it√©rations, l'image de d√©part repara√Æt. 
+  Toutefois, je ne connais pas de formule donnant cette p√©riode pour 
+  n'importe quelle image. Pour une image de \(2^m\) par \(2^m\) pixels, 
+  l'image de d√©part repara√Æt apr√®s \(2m+1\) it√©rations. Pour une image 
+  de \(2^m\) par \(2^n\) pixels, il faut attendre \((2m+1)(2n+1)+1\) 
+  it√©rations.
+
+  Pour calculer la p√©riode de la transformation pour une image donn√©e, 
+  \BouMaton calcule la p√©riode \(P(x,y)\) de chaque pixel de l'image 
+  (le nombre d'it√©rations n√©cessaires pour qu'il reprenne sa position 
+  initiale dans l'image). La p√©riode \(P\) pour l'image est le plus 
+  petit multiple commun √† toutes les p√©riodes \(P(x,y)\) des pixels de 
+  l'image. Ce calcul peut √™tre assez long, et \BouMaton utilise un 
+  flot de contr√¥le (thread) distinct pour le calculer, afin que l'on 
+  puisse faire autre chose pendant qu'il s'ex√©cute. La p√©riode de cette 
+  transformation peut √™tre tr√®s grande (896568225229163143800 pour une 
+  image \picdim{360}{400}), et \BouMaton utilise la classe BigInteger 
+  de Java pour calculer le PPCM des p√©riodes des pixels.
+  
+  Depuis la version 1.3, \BouMaton utilise un nouvel algorithme pour 
+  calculer cette p√©riode bien plus rapidement qu'avant. Lorsqu'on 
+  calcule la p√©riode d'un pixel, on trouve tous les pixels qui 
+  appartiennent √† son orbite. Tous ces pixels ont la m√™me p√©riode 
+  puisqu'ils appartiennent √† la m√™me orbite, il n'est donc pas 
+  n√©cessaire de calculer leur p√©riode ult√©rieurement. Comme il y a en 
+  g√©n√©ral peu d'orbites dans une image, le nombre de p√©riodes 
+  \(P(x,y)\) √† calculer est tr√®s fortement r√©duit lorsqu'on utilise 
+  cette optimisation, et le calcul de la p√©riode de la transformation 
+  du boulanger est maintenant aussi rapide que celui de la 
+  transformation du photomaton.
+  
+  \subsection{La transformation du photomaton}
+  Cette transformation √©clate une image en ce qui semble √™tre quatre 
+  copies identiques de l'original. Toutefois, les quatre sous-images ne 
+  sont pas exactement identiques car elles sont obtenues en prenant 
+  pour chacune d'elle un pixel de chaque carr√© \picdim{4}{4} de l'image 
+  de d√©part, comme indiqu√© ci-dessous pour une image \picdim{8}{8} :
+  \begin{center}
+    \newcommand{\pixbox}[2]{\makebox(1,1){\textsf{\scriptsize(#1,#2)}}}
+%     \newcounter{pixx}
+%     \newcounter{pixy}
+%     \newcounter{pixnum}
+    \newcommand{\dopixbox}[2]{%
+      \put(\thepixx,\thepixy){\pixbox{#1}{#2}}%
+      \stepcounter{pixx}%
+      \pholine{\thepixy}{\thepixx}{\thepixnum}%
+    }
+    \newcommand{\pholine}[3]{%
+      \let\next=\relax
+      \ifnum#2<#3
+        \setcounter{pixy}{#1}%
+        \setcounter{pixx}{#2}%
+        \setcounter{pixnum}{#3}%
+        \let\next=\dopixbox
+      \fi
+      \next
+    }
+    \setlength{\unitlength}{0.5cm}
+    \begin{picture}(19,9)
+      \put(0,0){\framebox(8,8){}}
+      \multiput(1,0)(1,0){7}{\line(0,1){8}}
+      \multiput(0,1)(0,1){7}{\line(1,0){8}}
+      \pholine{7}{0}{8} 0 0  0 1  0 2  0 3  0 4  0 5  0 6  0 7
+      \pholine{6}{0}{8} 1 0  1 1  1 2  1 3  1 4  1 5  1 6  1 7
+      \pholine{5}{0}{8} 2 0  2 1  2 2  2 3  2 4  2 5  2 6  2 7
+      \pholine{4}{0}{8} 3 0  3 1  3 2  3 3  3 4  3 5  3 6  3 7
+      \pholine{3}{0}{8} 4 0  4 1  4 2  4 3  4 4  4 5  4 6  4 7
+      \pholine{2}{0}{8} 5 0  5 1  5 2  5 3  5 4  5 5  5 6  5 7
+      \pholine{1}{0}{8} 6 0  6 1  6 2  6 3  6 4  6 5  6 6  6 7
+      \pholine{0}{0}{8} 7 0  7 1  7 2  7 3  7 4  7 5  7 6  7 7
+      %
+      \put(9,4){\vector(1,0){1}}
+      %
+      \put(11,0){\framebox(8,8){}}
+      \multiput(12,0)(1,0){7}{\line(0,1){8}}
+      \multiput(11,1)(0,1){7}{\line(1,0){8}}
+      \pholine{7}{11}{19} 0 0  0 2  0 4  0 6  0 1  0 3  0 5  0 7
+      \pholine{6}{11}{19} 2 0  2 2  2 4  2 6  2 1  2 3  2 5  2 7
+      \pholine{5}{11}{19} 4 0  4 2  4 4  4 6  4 1  4 3  4 5  4 7
+      \pholine{4}{11}{19} 6 0  6 2  6 4  6 6  6 1  6 3  6 5  6 7
+      \pholine{3}{11}{19} 1 0  1 2  1 4  1 6  1 1  1 3  1 5  1 7
+      \pholine{2}{11}{19} 3 0  3 2  3 4  3 6  3 1  3 3  3 5  3 7
+      \pholine{1}{11}{19} 5 0  5 2  5 4  5 6  5 1  5 3  5 5  5 7
+      \pholine{0}{11}{19} 7 0  7 2  7 4  7 6  7 1  7 3  7 5  7 7
+      %%
+      \qbezier(0.5,7.9)(8,9)(11.5,7.9)\put(11.5,7.9){\circle*{0.12}}
+      \qbezier(1.5,7.9)(9,10)(15.5,7.9)\put(15.5,7.9){\circle*{0.12}}
+      \qbezier(0.5,6.1)(8,3)(11.5,3.1)\put(11.5,3.1){\circle*{0.12}}
+      \qbezier(1.5,6.1)(8,1)(15.5,3.1)\put(15.5,3.1){\circle*{0.12}}
+      %%
+      \thicklines
+      \put(11,4){\line(1,0){8}}
+      \put(15,0){\line(0,1){8}}
+    \end{picture}
+  \end{center}
+  
+  Puisqu'aucune information n'est perdue au cours de cette 
+  transformation, et que le nombre de permutations des pixels de 
+  l'image est fini, l'image de d√©part repara√Æt in√©vitablement apr√®s un 
+  certain nombre d'it√©rations. Je ne connais pas de formule donnant 
+  cette p√©riode pour une image quelconque. Pour une image de \(2^m\) 
+  par \(2^n\) pixels, la p√©riode est le plus petit multiple commun √† 
+  \(m\) et \(n\). Pour une image \picdim{512}{512}, l'image repara√Æt 
+  apr√®s 9 it√©rations, alors que pour une image \picdim{128}{256}, il 
+  faudra attendre 56 it√©rations.
+
+  Toutefois, la p√©riode de la transformation du photomaton est
+  beaucoup plus facile √† calculer que celle de la transformation du
+  boulanger. En effet, l'abscisse d'un point a une p√©riode qui ne
+  d√©pend que de sa valeur, et il en est de m√™me pour son ordonn√©e.
+  En d'autres termes, tous les points situ√©s sur une ligne verticale
+  reviennent sur cette ligne au bout du m√™me nombre d'it√©rations, et
+  il en est de m√™me pour les lignes horizontales. La p√©riode
+  \(P(x,y)\) pour un pixel est le plus petit multiple commun aux
+  p√©riodes de son abscisse et de son ordonn√©e. La p√©riode de
+  l'image compl√®te est le PPCM des \(P(x,y)\) pour tous les pixels de
+  l'image.
+  
+  \subsection{Optimisations}
+  Quand la p√©riode \(P\) d'une transformation pour une image a √©t√© 
+  calcul√©e, \BouMaton l'utilise pour optimiser le calcul de \(n\) 
+  it√©rations de la transformation : il ne calcule que \(n \bmod P\) 
+  it√©rations. Si \(n \bmod P\) est plus proche de \(P\) que de 0, il 
+  calcule seulement \(P - (n \bmod P)\) it√©rations de la transformation 
+  inverse. De plus, pour chaque pixel de l'image, \BouMaton utilise la 
+  p√©riode de la transformation pour ce pixel de la m√™me mani√®re afin 
+  d'optimiser le calcul de la nouvelle position de ce pixel.
+  
+  \subsection{Enregistrement en JPEG des images transform√©es}
+  \BouMaton permet d'enregistrer les images transform√©es aux formats 
+  JPEG et PNG. Nous avons vu qu'aucune des transformations ne perd
+  d'information sur les images, de sorte qu'il est toujours possible
+  de retrouver l'original en appliquant les transformations inverses. 
+  Toutefois, comme la compression JPEG supprime des informations de
+  l'image, une image transform√©e, enregistr√©e en JPEG, puis
+  recharg√©e dans \BouMaton ne donnera pas l'image de d√©part si on
+  lui applique les transformations inverses.  L'aspect g√©n√©ral de
+  l'image sera pr√©serv√©, mais les couleurs seront d√©lav√©es et
+  l'image sera bruit√©e √† cause de la perte des informations que la
+  compression JPEG a √©limin√©es parce qu'elles ne semblaient pas
+  critiques dans l'image transform√©e. Ce probl√®me dispara√Æt avec le 
+  format PNG puisqu'il ne supprime aucune information.
+\end{document}

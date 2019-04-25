@@ -9,7 +9,23 @@
  *          Plateau de Moulon, 3 rue Joliot-Curie, F-91912 Gif-sur-Yvette cedex
  *     www: http://wdi.supelec.fr/boulanger/
  *  
- *  Description: 
+ *  Description:
+ *   
+ *  BouMaton, a program to compute transformations on pictures.
+ *  Copyright (C) 2019  Frédéric Boulanger (frederic.boulanger@centralesupelec.fr)
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ * 
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  * 
  *  History
  * 
@@ -23,7 +39,7 @@
  *  2006-02-10 FBO 1.5 fix TYPE_CUSTOM in PNG BufferedImage.
  *                     Better handling of out of memory conditions
  *  2019-04-23 FBO 2.0 Updated to use java.awt.Desktop for OS integration
- *  2019-04-24 FBO 2.0 Removed dependencies to java.awt.Desktop (did not work on MacOS)
+ *  2019-04-24 FBO 2.0 Removed dependencies to java.awt.Desktop through reflection
  * ###################################################################
  */
 
@@ -58,7 +74,6 @@ import java.awt.CheckboxGroup;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-//import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -2043,6 +2058,10 @@ class AboutBox extends Frame implements ActionListener {
 
 		aboutText = new Label ("Frédéric Boulanger, " + BouMaton.release(), Label.CENTER);
 		aboutText.setFont(ssr12);
+		add(aboutText);
+
+		aboutText = new Label ("frederic.boulanger@centralesupelec.fr", Label.CENTER);
+		aboutText.setFont(ssr10);
 		add(aboutText);
 
 		InputStream built_is = getClass().getClassLoader().getResourceAsStream("buildtime");
